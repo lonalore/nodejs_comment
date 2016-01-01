@@ -16,6 +16,8 @@ $event = e107::getEvent();
 $event->register('postcomment', 'nodejs_comment_event_postcomment_callback');
 $event->register('login', 'nodejs_comment_event_login_callback');
 
+// TODO: send notifications after comment has been approved.
+
 /**
  * Event callback after triggering "postcomment".
  *
@@ -52,6 +54,11 @@ $event->register('login', 'nodejs_comment_event_login_callback');
  */
 function nodejs_comment_event_postcomment_callback($comment)
 {
+	e107_require_once(e_PLUGIN . 'nodejs/nodejs.main.php');
+
+	$tpl = e107::getTemplate('nodejs_comment');
+	$sc = e107::getScBatch('nodejs_comment', true);
+	$tp = e107::getParser();
 	$cm = e107::getComment();
 
 	$cid = (int) vartrue($comment['comment_id'], 0);
@@ -59,12 +66,44 @@ function nodejs_comment_event_postcomment_callback($comment)
 	$uid = (int) vartrue($comment['comment_author_id'], 0);
 
 	$commentData = $cm->getCommentData(1, 0, 'comment_id=' . $cid);
-	array_pop($commentData);
+
+	if(!isset($commentData[0]))
+	{
+		return;
+	}
+
 	$authorData = e107::user($uid);
 
-	// TODO: send notification to everyone for updating latest comments menu.
+	// Send notification to everyone for updating latest comments menu.
+	$sc->setVars($commentData[0]);
+	$markup = $tp->parseTemplate($tpl['MENU']['LATEST']['ITEM'], true, $sc);
 
-	// TODO: send notification to everyone for notifying about new comment.
+	$message = (object) array(
+		'broadcast' => true,
+		'channel'   => 'nodejs_notify',
+		'callback'  => 'nodejsCommentMenu',
+		'type'      => 'latestComments',
+		'markup'    => $markup,
+	);
+	nodejs_enqueue_message($message);
+
+
+	// Send notification to everyone for notifying about new comment.
+	$sc->setVars(array(
+		'account' => $authorData,
+		'comment' => $commentData[0],
+	));
+	$markup = $tp->parseTemplate($tpl['NOTIFICATION']['POST_ALL'], true, $sc);
+
+	$message = (object) array(
+		'broadcast' => true,
+		'channel'   => 'nodejs_notify',
+		'callback'  => 'nodejsComments',
+		'type'      => 'newCommentAny',
+		'markup'    => $markup,
+		'exclude'   => $authorData['user_id'],
+	);
+	nodejs_enqueue_message($message);
 
 	// Reply on comment.
 	if($pid > 0)
@@ -73,7 +112,21 @@ function nodejs_comment_event_postcomment_callback($comment)
 		array_pop($commentParentData);
 		$authorParentData = e107::user();
 
-		// TODO: send notification to author of parent comment for notifying about new reply.
+		// Send notification to author of parent comment for notifying about new reply.
+		$sc->setVars(array(
+			'account' => $authorData,
+			'comment' => $commentData[0],
+		));
+		$markup = $tp->parseTemplate($tpl['NOTIFICATION']['POST_OWN'], true, $sc);
+
+		$message = (object) array(
+			'channel'  => 'nodejs_user_' . $authorParentData['user_id'],
+			'callback' => 'nodejsComments',
+			'type'     => 'newCommentOwn',
+			'markup'   => $markup,
+			'exclude'  => $authorData['user_id'],
+		);
+		nodejs_enqueue_message($message);
 	}
 }
 

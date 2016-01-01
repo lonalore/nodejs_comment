@@ -9,17 +9,17 @@
 $NODEJS_COMMENT_TEMPLATE['NOTIFICATION']['POST_ALL'] = '
 <div class="nodejs-forum-notification">
   <div class="picture">
-    {POST_ALL_AVATAR}
+    {COMMENT_ALL_AVATAR}
   </div>
   <div class="body">
     <span class="title">
-      {POST_ALL_TITLE}
+      {COMMENT_ALL_TITLE}
     </span>
     <div class="message">
-        {POST_ALL_MESSAGE}
+        {COMMENT_ALL_MESSAGE}
     </div>
     <div class="links">
-      {POST_ALL_LINKS}
+      {COMMENT_ALL_LINKS}
     </div>
   </div>
 </div>
@@ -29,17 +29,17 @@ $NODEJS_COMMENT_TEMPLATE['NOTIFICATION']['POST_ALL'] = '
 $NODEJS_COMMENT_TEMPLATE['NOTIFICATION']['POST_OWN'] = '
 <div class="nodejs-forum-notification">
   <div class="picture">
-    {POST_OWN_AVATAR}
+    {COMMENT_OWN_AVATAR}
   </div>
   <div class="body">
     <span class="title">
-      {POST_OWN_TITLE}
+      {COMMENT_OWN_TITLE}
     </span>
     <div class="message">
-        {POST_OWN_MESSAGE}
+        {COMMENT_OWN_MESSAGE}
     </div>
     <div class="links">
-      {POST_OWN_LINKS}
+      {COMMENT_OWN_LINKS}
     </div>
   </div>
 </div>
