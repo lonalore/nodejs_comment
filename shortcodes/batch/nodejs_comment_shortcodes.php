@@ -63,8 +63,9 @@ class nodejs_comment_shortcodes extends e_shortcode
 	 */
 	function sc_latest_comment_author()
 	{
-		$tp = e107::getParser();
-		return $tp->toText(vartrue($this->var['comment_author'], ''));
+		$user = e107::user($this->var['comment_author_id']);
+		// return vartrue($user['user_login'], $user['user_name']);
+		return $user['user_name'];
 	}
 
 
@@ -120,9 +121,11 @@ class nodejs_comment_shortcodes extends e_shortcode
 	 */
 	function sc_comment_all_title()
 	{
+		// $username = vartrue($this->var['account']['user_login'], $this->var['account']['user_name']);
+		$username = $this->var['account']['user_name'];
 		// TODO: use e107::url().
 		$href = e107::getUrl()->create('user/profile/view', $this->var['account']);
-		return '<a href="' . $href . '">' . $this->var['account']['user_name'] . '</a>';
+		return '<a href="' . $href . '">' . $username . '</a>';
 	}
 
 
@@ -135,8 +138,11 @@ class nodejs_comment_shortcodes extends e_shortcode
 	{
 		$author = $this->var['account'];
 
+		// $username = vartrue($author['user_login'], $author['user_name']);
+		$username = $author['user_name'];
+
 		$search = array('[x]', '[y]');
-		$replace = array($author['user_name'], $this->var['comment']['comment_subject']);
+		$replace = array($username, $this->var['comment']['comment_subject']);
 
 		return str_replace($search, $replace, LAN_PLUGIN_NODEJS_COMMENT_FRONT_02);
 	}
@@ -179,9 +185,11 @@ class nodejs_comment_shortcodes extends e_shortcode
 	 */
 	function sc_comment_own_title()
 	{
+		// $username = vartrue($this->var['account']['user_login'], $this->var['account']['user_name']);
+		$username = $this->var['account']['user_name'];
 		// TODO: use e107::url().
 		$href = e107::getUrl()->create('user/profile/view', $this->var['account']);
-		return '<a href="' . $href . '">' . $this->var['account']['user_name'] . '</a>';
+		return '<a href="' . $href . '">' . $username . '</a>';
 	}
 
 
@@ -194,8 +202,11 @@ class nodejs_comment_shortcodes extends e_shortcode
 	{
 		$author = $this->var['account'];
 
+		// $username = vartrue($author['user_login'], $author['user_name']);
+		$username = $author['user_name'];
+
 		$search = array('[x]', '[y]');
-		$replace = array($author['user_name'], $this->var['comment']['comment_subject']);
+		$replace = array($username, $this->var['comment']['comment_subject']);
 
 		return str_replace($search, $replace, LAN_PLUGIN_NODEJS_COMMENT_FRONT_03);
 	}
