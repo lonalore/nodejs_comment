@@ -62,7 +62,7 @@ class nodejs_comment_e_header
 	function includePublicComponents()
 	{
 		e107::css('nodejs_comment', 'css/nodejs_comment.css');
-		e107::js('nodejs_comment', 'js/nodejs_comment.menu.js', 'jquery', 5);
+		e107::js('footer', '{e_PLUGIN}nodejs_comment/js/nodejs_comment.menu.js', 'jquery', 5);
 	}
 
 
@@ -103,7 +103,7 @@ class nodejs_comment_e_header
 		);
 
 		e107::js('settings', array('nodejs_comment' => $js_options));
-		e107::js('nodejs_comment', 'js/nodejs_comment.js', 'jquery', 5);
+		e107::js('footer', '{e_PLUGIN}nodejs_comment/js/nodejs_comment.js', 'jquery', 5);
 	}
 }
 
